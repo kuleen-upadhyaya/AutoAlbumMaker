@@ -31,7 +31,6 @@ public class AppProperties
 		}
 		
 		log.info("Initializing Crypto");
-		
 	}
 	
 	public String getDecKey()
@@ -83,14 +82,5 @@ public class AppProperties
 		}
 		
 		return imageUploadPwd;
-	}
-	
-	public static void main (String args[])
-	{
-		AppProperties appProp = new AppProperties();
-		System.out.println(appProp.getDecKey());
-		System.out.println(appProp.getImageUploadPwd());
-		System.out.println(appProp.getMyAlbum());
-		System.out.println(appProp.getShrinkPhotos());
 	}
 }
