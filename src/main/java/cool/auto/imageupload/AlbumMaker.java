@@ -6,17 +6,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.google.common.io.Files;
 
-public class App4
+import cool.auto.imageupload.properties.AppProperties;
+
+public class AlbumMaker
 {
-
-	public static void main(String[] args) throws IOException
+	private static final String PATH_SEPRATOR = "\\";
+	Logger log = Logger.getLogger(AlbumMaker.class);
+	AppProperties appProps = new AppProperties();
+	
+	public void createAlbum(String originalPath)
 	{
-		String sourceDirStr = "C:\\Users\\kulee\\Downloads\\IDAR - POLO";
-		File sourceDir = new File(sourceDirStr);
-		File destDir = new File(sourceDirStr + "-imageupload");
-
+		File sourceDir = new File(originalPath);
+		File destDir = new File(originalPath + appProps.getImageUploadText());
+		
 		if (destDir.exists())
 		{
 			return;
@@ -30,11 +36,9 @@ public class App4
 		{
 			processDir(file, sourceDir, destDir);
 		}
-		
-		
 	}
-
-	private static void processDir(File sourceDir, File sourceBaseDir, File destBaseDir) throws IOException
+	
+	private void processDir(File sourceDir, File sourceBaseDir, File destBaseDir)
 	{
 		String destDirName = sourceDir.getAbsolutePath().substring(sourceBaseDir.getAbsolutePath().length());
 		File destDir = new File(destBaseDir.toString() + destDirName);
@@ -45,16 +49,26 @@ public class App4
 		
 		File [] jpegFiles = sourceDir.listFiles(new FilenameFilter()
 		{
-			public boolean accept(File arg0, String arg1)
+			public boolean accept(File file, String fileName)
 			{
-				String fileName = arg1.toLowerCase(); 
-				return fileName.endsWith(".jpeg") || fileName.endsWith("jpg");
+				
+				String exts[] = appProps.getSupportedExt().split("|");
+				
+				for(String ext : exts)
+				{
+					if(fileName.toLowerCase().endsWith(ext))
+					{
+						return true;
+					}
+				}
+				
+				return false;
 			}
 		});
 
 		long totalFileLength = 0;
 		long allowableFileLength = 1024 * 1024 * 200;
-		String albumStr = "album";
+		String albumTxt = appProps.getAlbumText();
 		int albumCtr = 0;
 		
 		for(File jpegFile : jpegFiles)
@@ -67,20 +81,31 @@ public class App4
 				totalFileLength = jpegFile.length();
 			}
 
-			String destAlbumStr = destDir.getAbsolutePath() + "\\" + albumStr + albumCtr;
+			String destAlbumStr = destDir.getAbsolutePath() + PATH_SEPRATOR + albumTxt + albumCtr;
 			File destAlbum = new File(destAlbumStr);
 			destAlbum.mkdirs();
 			
-			String destFileStr = destAlbumStr+ "\\" + jpegFile.getName();
+			String destFileStr = destAlbumStr+ PATH_SEPRATOR + jpegFile.getName();
 			File destFile = new File (destFileStr);
 			
-			System.out.println("Copying File : " + " : " + jpegFile + " -> " + destFile);
+			log.info("Copying File : " + " : " + jpegFile + " -> " + destFile);
 			
-			Files.copy(jpegFile, destFile);
+			if(jpegFile.isFile() && destFile.isFile())
+			{
+				try
+				{
+
+					Files.copy(jpegFile, destFile);
+				}
+				catch (IOException e)
+				{
+					log.error("Error while copying file.", e);
+				}
+			}
 		}
 	}
 
-	private static List <File> listSubDirectories(File sourceDir) throws IOException
+	private List <File> listSubDirectories(File sourceDir)
 	{
 		final List <File> listSourceDirs  = new ArrayList<File>();
 		File[] subDirs = sourceDir.listFiles();

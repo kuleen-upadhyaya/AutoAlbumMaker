@@ -83,4 +83,19 @@ public class AppProperties
 		
 		return imageUploadPwd;
 	}
+
+	public String getImageUploadText()
+	{
+		return properties.getProperty("IMAGEUPLOAD-TEXT");
+	}
+	
+	public String getSupportedExt()
+	{
+		return properties.getProperty("SUPPORTED-EXT");
+	}
+	
+	public String getAlbumText()
+	{
+		return properties.getProperty("ALBUM-TEXT");
+	}
 }

@@ -1,4 +1,4 @@
-package cool.auto.imageupload;
+package cool.auto.imageupload.utils;
 
 import static java.awt.event.KeyEvent.VK_0;
 import static java.awt.event.KeyEvent.VK_1;

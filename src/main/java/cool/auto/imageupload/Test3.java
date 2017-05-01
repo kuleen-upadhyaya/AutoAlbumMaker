@@ -2,7 +2,9 @@ package cool.auto.imageupload;
 
 import java.awt.AWTException;
 
-public class App3
+import cool.auto.imageupload.utils.Keyboard;
+
+public class Test3
 {
 	public static void main(String[] args) throws AWTException, InterruptedException
 	{

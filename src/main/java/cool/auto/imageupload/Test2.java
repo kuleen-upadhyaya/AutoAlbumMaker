@@ -11,8 +11,9 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 
 import cool.auto.imageupload.properties.AppProperties;
+import cool.auto.imageupload.utils.Keyboard;
 
-public class App2
+public class Test2
 {
 	public static void main(String[] args) throws InterruptedException, IOException, AWTException
 	{
