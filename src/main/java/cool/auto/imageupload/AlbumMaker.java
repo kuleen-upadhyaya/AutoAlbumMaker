@@ -31,15 +31,23 @@ public class AlbumMaker
 		destDir.mkdirs();
 		
 		List <File> subDirs = listSubDirectories(sourceDir);
+		log.info("List of Directories to process : ");
 		
-		for(File file : subDirs)
+		for(File dir : subDirs)
 		{
-			processDir(file, sourceDir, destDir);
+			log.info(dir.toString());
+		}
+		
+		for(File dir : subDirs)
+		{
+			processDir(dir, sourceDir, destDir);
 		}
 	}
 	
 	private void processDir(File sourceDir, File sourceBaseDir, File destBaseDir)
 	{
+		log.info("Processing Dir : " + sourceDir);
+		
 		String destDirName = sourceDir.getAbsolutePath().substring(sourceBaseDir.getAbsolutePath().length());
 		File destDir = new File(destBaseDir.toString() + destDirName);
 		if(!destDir.exists())
@@ -52,7 +60,7 @@ public class AlbumMaker
 			public boolean accept(File file, String fileName)
 			{
 				
-				String exts[] = appProps.getSupportedExt().split("|");
+				String exts[] = appProps.getSupportedExt().split("\\|");
 				
 				for(String ext : exts)
 				{
@@ -88,19 +96,16 @@ public class AlbumMaker
 			String destFileStr = destAlbumStr+ PATH_SEPRATOR + jpegFile.getName();
 			File destFile = new File (destFileStr);
 			
-			log.info("Copying File : " + " : " + jpegFile + " -> " + destFile);
+			log.info("Copying File : " + jpegFile + " -> " + destFile);
 			
-			if(jpegFile.isFile() && destFile.isFile())
+			try
 			{
-				try
-				{
 
-					Files.copy(jpegFile, destFile);
-				}
-				catch (IOException e)
-				{
-					log.error("Error while copying file.", e);
-				}
+				Files.copy(jpegFile, destFile);
+			}
+			catch (IOException e)
+			{
+				log.error("Error while copying file.", e);
 			}
 		}
 	}
